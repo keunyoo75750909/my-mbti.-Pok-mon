@@ -3,547 +3,511 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>✨ MBTI로 찾는 나의 운명 포켓몬 ✨</title>
+  <title>MBTI로 찾는 내 운명 포켓몬</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap');
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      user-select: none;
     }
 
     body {
-      font-family: 'Gowun Dodum', -apple-system, sans-serif;
-      background: radial-gradient(circle at top, #fffdf0 0%, #fff3d1 50%, #ffeaa7 100%);
-      color: #3d2c1d;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Segoe UI", Roboto, sans-serif;
+      background-color: #f7f4eb; /* 깔끔하고 심플한 크림 톤 배경 */
+      color: #382e25;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 30px 15px;
+      padding: 30px 16px;
+      position: relative;
       overflow-x: hidden;
-      position: relative;
     }
 
-    /* 배경 장식 입자 */
-    .bg-bubble {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.4);
-      animation: float 6s infinite ease-in-out;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-20px) scale(1.05); }
-    }
-
-    /* 메인 컨테이너 */
-    .container {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 650px;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      border: 3px solid #ffe082;
-      border-radius: 28px;
-      padding: 36px 24px;
-      box-shadow: 0 20px 40px rgba(224, 159, 31, 0.2), inset 0 0 15px rgba(255, 255, 255, 0.8);
-      text-align: center;
-    }
-
-    h1 {
-      font-family: 'Jua', sans-serif;
-      font-size: 2.3rem;
-      color: #e67e22;
-      text-shadow: 2px 2px 0px #fff, 4px 4px 10px rgba(230, 126, 34, 0.2);
-      margin-bottom: 8px;
-      letter-spacing: 1px;
-    }
-
-    .subtitle {
-      font-size: 1.15rem;
-      color: #7f6343;
-      margin-bottom: 28px;
-      font-weight: 600;
-    }
-
-    /* 16가지 MBTI 그리드 */
-    .mbti-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    @media (max-width: 480px) {
-      .mbti-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .mbti-card {
-      font-family: 'Jua', sans-serif;
-      font-size: 1.25rem;
-      padding: 16px 8px;
-      background: linear-gradient(145deg, #ffffff, #fff8e1);
-      border: 2px solid #ffd54f;
-      border-radius: 18px;
-      color: #4e342e;
-      cursor: pointer;
-      box-shadow: 0 6px 12px rgba(255, 193, 7, 0.15);
-      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .mbti-card span.group-tag {
-      font-size: 0.75rem;
-      font-family: 'Gowun Dodum', sans-serif;
-      font-weight: bold;
-      color: #ff9800;
-      background: #fff3e0;
-      padding: 2px 8px;
-      border-radius: 10px;
-    }
-
-    .mbti-card:hover {
-      transform: translateY(-5px) scale(1.03);
-      border-color: #ff9800;
-      background: linear-gradient(145deg, #fff3e0, #ffe0b2);
-      box-shadow: 0 10px 20px rgba(255, 152, 0, 0.3);
-    }
-
-    .mbti-card:active {
-      transform: translateY(0) scale(0.98);
-    }
-
-    /* 결과 출력 영역 */
-    #result-box {
-      display: none;
-      animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-
-    @keyframes popUp {
-      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .poke-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, #ffb74d, #ffa726);
-      color: white;
-      font-family: 'Jua', sans-serif;
-      font-size: 1.1rem;
-      padding: 6px 20px;
-      border-radius: 30px;
-      box-shadow: 0 4px 10px rgba(255, 167, 38, 0.4);
-      margin-bottom: 12px;
-    }
-
-    .poke-emoji {
-      font-size: 5.5rem;
-      line-height: 1;
-      margin: 10px 0;
-      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
-      animation: bounce 2s infinite ease-in-out;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
-    .poke-name {
-      font-family: 'Jua', sans-serif;
-      font-size: 2.2rem;
-      color: #d35400;
-      margin-bottom: 16px;
-    }
-
-    /* 설명 박스들 */
-    .info-card {
-      background: rgba(255, 255, 255, 0.9);
-      border: 2px dashed #ffe082;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-      text-align: left;
-    }
-
-    .info-card h3 {
-      font-family: 'Jua', sans-serif;
-      font-size: 1.15rem;
-      color: #e67e22;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .info-card p {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #4a3b2c;
-      word-break: keep-all;
-    }
-
-    .match-box {
-      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
-      border: 2px solid #ffb74d;
-      border-radius: 16px;
-      padding: 14px;
-      margin-top: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 12px rgba(255, 183, 77, 0.2);
-    }
-
-    .match-title {
-      font-family: 'Jua', sans-serif;
-      font-size: 1.1rem;
-      color: #e65100;
-    }
-
-    .match-badge {
-      font-family: 'Jua', sans-serif;
-      font-size: 1.3rem;
-      background: #ffffff;
-      color: #f57c00;
-      padding: 6px 16px;
-      border-radius: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    /* 다시 고르기 버튼 */
-    .reset-btn {
-      font-family: 'Jua', sans-serif;
-      font-size: 1.25rem;
-      background: linear-gradient(135deg, #ff9800, #f57c00);
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 14px 36px;
-      margin-top: 24px;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(245, 124, 0, 0.35);
-      transition: all 0.2s ease;
-    }
-
-    .reset-btn:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 12px 25px rgba(245, 124, 0, 0.45);
-      background: linear-gradient(135deg, #ffa726, #fb8c00);
-    }
-
-    .reset-btn:active {
-      transform: translateY(1px);
-    }
-
-    /* 캔버스 팡파르 폭죽 */
-    #confetti-canvas {
+    /* 비눗방울 캔버스 (배경 전체) */
+    #bubble-canvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
       pointer-events: none;
-      z-index: 99;
+      z-index: 1;
+    }
+
+    /* 메인 카드 컨테이너 */
+    .app-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 580px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid #eae2d0;
+      border-radius: 24px;
+      padding: 32px 22px;
+      box-shadow: 0 12px 32px rgba(90, 75, 60, 0.08);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      color: #e2820a;
+      margin-bottom: 6px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      font-size: 0.98rem;
+      color: #7c6f62;
+      margin-bottom: 24px;
+    }
+
+    /* MBTI 선택 그리드 */
+    .mbti-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 420px) {
+      .mbti-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .mbti-btn {
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #4a3c30;
+      background: #ffffff;
+      border: 2px solid #ebdcc4;
+      border-radius: 14px;
+      padding: 14px 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .mbti-btn:hover {
+      border-color: #e2820a;
+      background: #fff8eb;
+      color: #e2820a;
+      transform: translateY(-2px);
+    }
+
+    .mbti-btn:active {
+      transform: translateY(0);
+    }
+
+    /* 결과창 디자인 */
+    #result-view {
+      display: none;
+      animation: fadeIn 0.35s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 포켓몬 사진 카드 프레임 */
+    .photo-card {
+      background: #ffffff;
+      border: 3px solid #f2e3c6;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 16px 0 20px 0;
+      box-shadow: 0 8px 20px rgba(226, 130, 10, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .type-badge {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: #fff0d6;
+      color: #d97706;
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+
+    .pokemon-img-frame {
+      width: 130px;
+      height: 130px;
+      background: radial-gradient(circle, #fffbf2 0%, #fef3d6 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4.8rem;
+      margin: 10px 0 12px 0;
+      border: 3px solid #fde68a;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .pokemon-name {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #d97706;
+      margin-bottom: 4px;
+    }
+
+    /* 설명 카드 블록 */
+    .info-box {
+      background: #fdfaf3;
+      border: 1px solid #f0e4cf;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .info-box h3 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #b45309;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-box p {
+      font-size: 0.93rem;
+      line-height: 1.6;
+      color: #524538;
+      word-break: keep-all;
+    }
+
+    /* 궁합 카드 컨테이너 (2열) */
+    .match-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 480px) {
+      .match-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .match-card {
+      border-radius: 14px;
+      padding: 14px;
+      text-align: left;
+    }
+
+    .match-card.best {
+      background: #f0fdf4;
+      border: 1.5px solid #bbf7d0;
+    }
+
+    .match-card.worst {
+      background: #fef2f2;
+      border: 1.5px solid #fecaca;
+    }
+
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .match-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .match-card.best .match-title { color: #15803d; }
+    .match-card.worst .match-title { color: #b91c1c; }
+
+    .match-badge {
+      font-size: 0.9rem;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 10px;
+    }
+
+    .match-card.best .match-badge { background: #dcfce7; color: #166534; }
+    .match-card.worst .match-badge { background: #fee2e2; color: #991b1b; }
+
+    .match-desc {
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: #4b5563;
+      word-break: keep-all;
+    }
+
+    /* 다시 고르기 버튼 */
+    .reset-btn {
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      background: #e2820a;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 28px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .reset-btn:hover {
+      background: #c76f03;
     }
   </style>
 </head>
 <body>
 
-  <!-- 배경 팡파르 캔버스 -->
-  <canvas id="confetti-canvas"></canvas>
+  <!-- 배경 비눗방울 애니메이션 캔버스 -->
+  <canvas id="bubble-canvas"></canvas>
 
-  <div class="container">
-    <!-- 메인 타이틀 -->
-    <div id="header-box">
-      <h1>⚡ MBTI 운명 포켓몬 찾기 ⚡</h1>
-      <p class="subtitle">나의 성격 유형을 선택하고 찰떡 궁합 포켓몬을 만나보세요!</p>
+  <div class="app-container">
+    <div id="header-area">
+      <h1>🐣 MBTI로 포켓몬 찾기</h1>
+      <p class="subtitle">내 MBTI를 선택하고 어울리는 포켓몬을 확인하세요!</p>
     </div>
 
-    <!-- MBTI 선택 그리드 -->
+    <!-- MBTI 버튼 목록 -->
     <div class="mbti-grid" id="mbti-grid"></div>
 
-    <!-- 결과 화면 -->
-    <div id="result-box">
-      <div class="poke-badge" id="res-mbti-tag">ENFP</div>
-      <div class="poke-emoji" id="res-emoji">⚡</div>
-      <div class="poke-name" id="res-name">피카츄</div>
+    <!-- 결과 영역 -->
+    <div id="result-view">
+      <!-- 사진 프레임 -->
+      <div class="photo-card">
+        <span class="type-badge" id="res-mbti-badge">ENFP</span>
+        <div class="pokemon-img-frame" id="res-emoji">⚡</div>
+        <div class="pokemon-name" id="res-poke-name">피카츄</div>
+      </div>
 
       <!-- MBTI 특징 설명 -->
-      <div class="info-card">
-        <h3>💡 <span id="res-mbti-title">MBTI 성격 특징</span></h3>
-        <p id="res-mbti-desc">설명 내용</p>
+      <div class="info-box">
+        <h3>🧠 MBTI 성격 특징</h3>
+        <p id="res-mbti-desc">MBTI 성격 설명이 들어갑니다.</p>
       </div>
 
-      <!-- 포켓몬 어울리는 이유 -->
-      <div class="info-card">
-        <h3>❤️ <span id="res-poke-title">포켓몬과 잘 어울리는 이유</span></h3>
-        <p id="res-poke-desc">어울리는 이유 내용</p>
+      <!-- 포켓몬 매칭 이유 -->
+      <div class="info-box">
+        <h3>❤️ 포켓몬과 닮은 이유</h3>
+        <p id="res-poke-desc">포켓몬과 어울리는 이유 설명이 들어갑니다.</p>
       </div>
 
-      <!-- 최고의 궁합 -->
-      <div class="match-box">
-        <div style="text-align: left;">
-          <div class="match-title">💘 최고의 케미 궁합</div>
-          <div style="font-size: 0.88rem; color: #7f6343; margin-top: 2px;" id="res-match-reason">서로의 단점을 보완해주는 완벽한 파트너</div>
+      <!-- 궁합 정보 (최고 vs 최악) -->
+      <div class="match-container">
+        <!-- 가장 잘 맞는 궁합 -->
+        <div class="match-card best">
+          <div class="match-header">
+            <span class="match-title">💚 최고의 궁합</span>
+            <span class="match-badge" id="res-best-mbti">INFJ</span>
+          </div>
+          <div class="match-desc" id="res-best-desc">잘 맞는 이유 설명</div>
         </div>
-        <div class="match-badge" id="res-match-type">INFJ</div>
+
+        <!-- 가장 안 맞는 궁합 -->
+        <div class="match-card worst">
+          <div class="match-header">
+            <span class="match-title">💔 상극 궁합</span>
+            <span class="match-badge" id="res-worst-mbti">ISTJ</span>
+          </div>
+          <div class="match-desc" id="res-worst-desc">안 맞는 이유 설명</div>
+        </div>
       </div>
 
-      <button class="reset-btn" onclick="resetApp()">🔄 다시 선택하기</button>
+      <button class="reset-btn" onclick="resetUI()">🔄 다시 고르기</button>
     </div>
   </div>
 
 <script>
-  // 오프라인 Web Audio API 사운드 효과
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-  function playPopSound() {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.08);
-  }
-
-  function playFanfareSound() {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-    notes.forEach((freq, idx) => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.value = freq;
-      const startTime = audioCtx.currentTime + idx * 0.09;
-      gain.gain.setValueAtTime(0.25, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.25);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(startTime);
-      osc.stop(startTime + 0.25);
-    });
-  }
-
-  // 16가지 MBTI 데이터베이스
-  const MBTI_DATA = {
+  // 16가지 MBTI 상세 데이터 (포켓몬, 설명, 최고/최악 궁합)
+  const MBTI_POKEMON = {
     ENFP: {
-      tag: "열정적인 분석가",
       name: "피카츄",
       emoji: "⚡",
-      mbtiDesc: "창의적이고 매사 밝고 활기차며 호기심이 넘치는 분위기 메이커입니다. 새로운 가능성을 탐색하는 것을 좋아해요.",
-      pokeDesc: "언제나 백만볼트 같은 에너지를 뿜어내며 모험을 즐기는 피카츄처럼 주변 사람들에게 긍정 스파크를 전달합니다!",
-      match: "INFJ",
-      matchReason: "조용히 마음을 받아주는 INFJ가 ENFP의 열정을 따뜻하게 감싸줍니다."
+      mbtiDesc: "호기심이 많고 에너지가 넘치며, 새로운 도전과 사람을 좋아하는 아이디어 메이커입니다.",
+      pokeDesc: "언제나 신나게 스파크를 일으키며 친구들과 모험을 떠나는 피카츄처럼 매력적인 밝은 에너지를 발산합니다.",
+      best: { mbti: "INFJ", reason: "깊이 있는 대화와 진정성 있는 공감으로 ENFP의 열정을 포근히 감싸줍니다." },
+      worst: { mbti: "ISTJ", reason: "원칙과 규율만 지나치게 강조하여 자율성을 답답하게 만들 수 있습니다." }
     },
     ENFJ: {
-      tag: "정의로운 리더",
       name: "푸린",
       emoji: "🎤",
-      mbtiDesc: "타인의 감정에 깊이 공감하고, 다정한 눈빛과 말로 사람들을 따뜻하게 이끄는 타고난 지도자입니다.",
-      pokeDesc: "자신의 아름다운 노래로 모두의 마음을 하나로 모으는 푸린처럼 타인에게 감동과 힐링을 주는 존재입니다.",
-      match: "INFP",
-      matchReason: "INFP의 깊은 내면 세계를 ENFJ가 따뜻하게 밝혀주는 이상적인 조합!"
+      mbtiDesc: "타인의 감정에 깊이 공감하고, 다정한 리더십으로 주변 사람들을 따뜻하게 이끄는 타입입니다.",
+      pokeDesc: "감미로운 노래로 사람들의 마음을 하나로 모으고 보살펴주는 푸린처럼 힐링을 선사합니다.",
+      best: { mbti: "INFP", reason: "INFP의 깊은 내면 가치를 따뜻하게 밝혀주고 이끌어주는 완벽한 짝입니다." },
+      worst: { mbti: "ISTP", reason: "감정 표현이 적고 무심한 행동으로 인해 상처를 받을 수 있습니다." }
     },
     ENTP: {
-      tag: "재기발랄한 혁신가",
       name: "파오리",
       emoji: "🦆",
-      mbtiDesc: "독창적인 아이디어가 샘솟고 풍부한 재치와 유머로 고정관념을 깨부수는 것을 즐기는 아이디어 뱅크입니다.",
-      pokeDesc: "대파 하나 들고 당당하게 세상을 헤쳐 나가는 파오리처럼 어떤 상황에서도 엉뚱함과 재치로 독보적 매력을 발합니다.",
-      match: "INFJ",
-      matchReason: "ENTP의 기발한 사상을 INFJ가 진지하고 신중하게 경청해 줍니다."
+      mbtiDesc: "독창적이고 토론을 즐기며, 고정관념을 뒤흔드는 재기발랄한 혁신가입니다.",
+      pokeDesc: "대파 하나 들고 거침없이 세상을 누비는 당당한 파오리처럼 엉뚱하지만 재치 만점의 매력을 보여줍니다.",
+      best: { mbti: "INFJ", reason: "ENTP의 엉뚱하고 기발한 아이디어도 깊이 있게 경청하고 통찰해 줍니다." },
+      worst: { mbti: "ISFJ", reason: "변화를 싫어하고 틀에 가두려는 정적인 성향과 충돌하기 쉽습니다." }
     },
     ENTJ: {
-      tag: "대담한 지도자",
       name: "갸라도스",
       emoji: "🌊",
-      mbtiDesc: "철저한 계획과 카리스마 넘치는 리더십으로 목표를 향해 폭풍처럼 직진하는 강한 추진력의 소유자입니다.",
-      pokeDesc: "거친 바다도 단숨에 평정하는 강력한 갸라도스처럼 당면한 장애물을 모두 돌파해 내는 압도적 해결사입니다.",
-      match: "INTP",
-      matchReason: "INTP의 논리적 지혜와 ENTJ의 실행력이 만나 최강의 시너지를 냅니다."
+      mbtiDesc: "강력한 리더십과 목표 지향적인 결단력으로 상상을 현실로 만들어내는 실행가입니다.",
+      pokeDesc: "거친 파도를 지배하는 압도적인 위엄의 갸라도스처럼 당면한 장애물을 거침없이 돌파합니다.",
+      best: { mbti: "INTP", reason: "INTP의 냉철한 전략 분석이 ENTJ의 강력한 추진력에 날개를 달아줍니다." },
+      worst: { mbti: "ISFP", reason: "느긋하고 비계획적인 태도에 대해 우유부단함을 느껴 답답할 수 있습니다." }
     },
     ESFP: {
-      tag: "자유로운 연예인",
       name: "이상해꽃",
       emoji: "🌻",
-      mbtiDesc: "현재의 즐거움을 가장 소중히 여기며 사교적이고 밝아 가는 곳마다 웃음꽃을 피우는 매력 만점 타입입니다.",
-      pokeDesc: "등 뒤에 활짝 핀 꽃처럼 사람들에게 화사한 기운과 친근한 매력을 아낌없이 나눠주는 무드메이커입니다.",
-      match: "ISFJ",
-      matchReason: "차분한 ISFJ가 ESFP의 신나는 모험을 뒤에서 든든히 보살펴줍니다."
+      mbtiDesc: "즉흥적이고 사교적이며 주위 사람들에게 기쁨과 활력을 선사하는 열정적인 스타입니다.",
+      pokeDesc: "등 뒤의 꽃처럼 어디서나 화사하고 긍정적인 기운을 뿜어내며 분위기를 한껏 밝힙니다.",
+      best: { mbti: "ISFJ", reason: "ESFP의 통통 튀는 모험을 곁에서 세심하고 차분하게 보살펴줍니다." },
+      worst: { mbti: "INTJ", reason: "지나치게 진지하고 미래 계획만 논하는 대화에 어색함을 느낍니다." }
     },
     ESFJ: {
-      tag: "사교적인 양육자",
       name: "럭키",
       emoji: "💗",
-      mbtiDesc: "주변 사람들을 섬세하게 챙기며 타인의 행복에서 자신의 기쁨을 찾는 따뜻한 수호자입니다.",
-      pokeDesc: "상처받은 모두를 포근하게 치료해 주는 알포켓몬 럭키처럼 세심한 배려로 주변에 평화를 가져다줍니다.",
-      match: "ISFP",
-      matchReason: "ISFP의 예술적 감수성을 ESFJ가 온화하게 아껴주고 응원합니다."
+      mbtiDesc: "친절하고 다정하며 모두의 안녕과 조화를 중요하게 생각하는 세심한 수호자입니다.",
+      pokeDesc: "다친 동료를 포근하게 치료해 주고 행복을 나눠주는 럭키처럼 따뜻한 온정을 불어넣습니다.",
+      best: { mbti: "ISFP", reason: "ISFP의 예술적 감성과 온화한 성품을 온전히 아껴주고 맞춰줍니다." },
+      worst: { mbti: "ENTP", reason: "규칙과 예의를 무시하고 잦은 논쟁을 유발할 때 지치기 쉽습니다." }
     },
     ESTP: {
-      tag: "명확한 모험가",
       name: "리자몽",
       emoji: "🔥",
-      mbtiDesc: "관찰력이 뛰어나고 순발력이 탁월하며 스릴 넘치는 현장과 도전을 두려워하지 않는 액션파입니다.",
-      pokeDesc: "뜨거운 불꽃을 내뿜으며 하늘을 거침없이 비행하는 리자몽처럼 열정적이고 즉각적인 행동력이 빛납니다.",
-      match: "ISTJ",
-      matchReason: "차분한 ISTJ가 ESTP의 과감한 도전에 안정적인 닻이 되어줍니다."
+      mbtiDesc: "순발력이 뛰어나고 에너지가 넘치며, 스릴과 도전을 두려워하지 않는 현장파 모험가입니다.",
+      pokeDesc: "뜨거운 불꽃을 내뿜으며 하늘을 나는 리자몽처럼 정열적이고 거침없는 행동력을 자랑합니다.",
+      best: { mbti: "ISTJ", reason: "과감하고 가파른 도전에 차분하고 탄탄한 방어막과 조언을 제공합니다." },
+      worst: { mbti: "INFJ", reason: "지나치게 비유적이고 진지한 미래 이야기에 흥미를 잃기 쉽습니다." }
     },
     ESTJ: {
-      tag: "엄격한 관리자",
       name: "코뿌리",
       emoji: "🐗",
-      mbtiDesc: "질서와 원칙을 중시하며 책임감이 남달라 조직이나 과업을 완벽하게 완성해 내는 실용주의자입니다.",
-      pokeDesc: "어떤 충격에도 흔들리지 않는 코뿌리의 뿔처럼 강인한 신념과 체계성으로 신뢰를 한몸에 받습니다.",
-      match: "ISFP",
-      matchReason: "유연하고 자유로운 ISFP가 ESTJ의 엄격함에 부드러운 여유를 전해줍니다."
+      mbtiDesc: "체계적이고 원칙을 중시하며, 강한 책임감으로 조직을 확실히 이끄는 실천가입니다.",
+      pokeDesc: "어떤 장해물도 단단한 뿔과 몸집으로 묵직하게 밀고 나가는 코뿌리처럼 단단한 신뢰감을 줍니다.",
+      best: { mbti: "ISFP", reason: "부드럽고 유연한 ISFP가 ESTJ의 엄격함 속에 여유를 선사합니다." },
+      worst: { mbti: "INFP", reason: "규칙과 현실을 무시하고 감정적으로 판단할 때 감정 골이 깊어집니다." }
     },
     INFP: {
-      tag: "잔망스러운 몽상가",
       name: "이브이",
       emoji: "🌸",
-      mbtiDesc: "깊은 감수성과 무한한 진정성을 지녔으며 자신만의 소중한 가치와 신념을 온화하게 지켜가는 타입입니다.",
-      pokeDesc: "어떤 환경에서도 자신만의 다채로운 모습으로 진화할 수 있는 이브이처럼 무한한 가능성을 안고 있습니다.",
-      match: "ENFJ",
-      matchReason: "ENFJ의 적극적인 다정함이 INFP의 내면 잠재력을 활짝 피워줍니다."
+      mbtiDesc: "이상과 가치를 중시하며 풍부한 상상력과 순수한 마음을 가진 진정성 있는 몽상가입니다.",
+      pokeDesc: "무엇으로든 진화할 수 있는 무한한 가능성과 따스함을 품은 이브이와 똑 닮았습니다.",
+      best: { mbti: "ENFJ", reason: "INFP의 여린 마음과 내면 잠재력을 열정적으로 보호하고 이끌어줍니다." },
+      worst: { mbti: "ESTJ", reason: "현실의 차가운 잣대와 비판만 가할 때 마음에 큰 상처를 입습니다." }
     },
     INFJ: {
-      tag: "통찰력 있는 조언자",
       name: "가디안",
       emoji: "🌙",
-      mbtiDesc: "사람의 마음을 꿰뚫어 보는 신비로운 통찰력과 세상을 더 좋게 만들려는 확고한 신념을 가졌습니다.",
-      pokeDesc: "트레이너의 마음을 깊이 감지하고 위험으로부터 지켜주는 가디안처럼 조용하지만 헌신적인 수호자입니다.",
-      match: "ENFP",
-      matchReason: "ENFP의 밝고 자유로운 에너지가 INFJ의 깊은 고민을 유쾌하게 풀어줍니다."
+      mbtiDesc: "통찰력이 깊고 조용히 세상을 변화시키려 노력하는 따뜻하고 진정한 조언자입니다.",
+      pokeDesc: "트레이너의 마음을 사려 깊게 읽고 목숨 바쳐 수호하는 가디안처럼 조용한 수호자입니다.",
+      best: { mbti: "ENFP", reason: "밝고 자유로운 에너지가 INFJ의 깊은 고민과 신념을 유쾌하게 풀어줍니다." },
+      worst: { mbti: "ESTP", reason: "자극적이고 즉흥적이기만 한 행동에 지치고 마음을 닫게 됩니다." }
     },
     INTP: {
-      tag: "논리적인 탐구가",
       name: "폴리곤",
       emoji: "🧩",
-      mbtiDesc: "지적 호기심이 왕성하며 세상의 모든 구조와 정밀한 원리를 분석하기 즐기는 냉철한 천재 연구원입니다.",
-      pokeDesc: "디지털 코드로 이루어져 독창적 시스템을 지닌 폴리곤처럼 정교하고 복잡한 문제를 명쾌히 해결합니다.",
-      match: "ENTJ",
-      matchReason: "INTP의 탁월한 아이디어를 ENTJ가 현실 세계의 성과로 실현시켜 줍니다."
+      mbtiDesc: "논리적인 분석과 비판적 사고를 즐기며 복잡한 문제를 명쾌히 파헤치는 지적 탐구자입니다.",
+      pokeDesc: "정교한 디지털 체계와 알고리즘으로 만들어진 폴리곤처럼 정밀한 원리를 파악해 냅니다.",
+      best: { mbti: "ENTJ", reason: "INTP의 탁월한 아이디어를 현실의 실질적인 성과로 실현시켜 줍니다." },
+      worst: { mbti: "ESFJ", reason: "감정적인 동조나 원치 않는 사회적 의례를 강요할 때 부담을 느낍니다." }
     },
     INTJ: {
-      tag: "용의주도한 전략가",
       name: "뮤츠",
       emoji: "🔮",
-      mbtiDesc: "비전과 독창성을 겸비했으며 목표 달성을 위해 철저한 계획을 수립하고 밀고 나가는 전략가입니다.",
-      pokeDesc: "강력한 전설의 지혜와 차원이 다른 통찰력을 자랑하는 뮤츠처럼 높은 목표를 향해 정밀하게 나아갑니다.",
-      match: "ENFP",
-      matchReason: "상상력 넘치는 ENFP가 INTJ의 차가운 지성에 따스한 영감을 불어넣습니다."
+      mbtiDesc: "철저한 전략과 장기적 비전을 바탕으로 독창적인 길을 개척하는 냉철한 지략가입니다.",
+      pokeDesc: "강력한 지능과 초능력으로 판도를 지배하는 뮤츠처럼 높은 목표를 정밀하게 달성합니다.",
+      best: { mbti: "ENFP", reason: "독특하고 풍부한 상상력이 INTJ의 차가운 지성에 영감을 불어넣습니다." },
+      worst: { mbti: "ESFP", reason: "통제하기 힘들고 무계획적인 산만함에 피로감을 느끼기 쉽습니다." }
     },
     ISFP: {
-      tag: "호기심 많은 예술가",
       name: "치코리타",
       emoji: "🌿",
-      mbtiDesc: "온화하고 겸손하며 자신만의 평화로운 공간에서 감성적이고 섬세한 아름다움을 가꾸어 갑니다.",
-      pokeDesc: "머리의 잎사귀로 포근한 향기를 내뿜어 마음을 맑게 해주는 치코리타처럼 존재 자체로 힐링이 됩니다.",
-      match: "ESFJ",
-      matchReason: "ESFJ의 세심한 관심과 케어가 ISFP에게 큰 안도감과 편안함을 선사합니다."
+      mbtiDesc: "온화하고 겸손하며, 자신만의 감성과 평화로운 공간을 가꾸어가는 수줍은 예술가입니다.",
+      pokeDesc: "상쾌한 향기로 지친 이들의 마음을 다독여주는 치코리타처럼 존재 자체로 힐링을 줍니다.",
+      best: { mbti: "ESFJ", reason: "ESFJ의 세심한 관심과 챙김이 ISFP에게 큰 안도감과 따뜻함을 줍니다." },
+      worst: { mbti: "ENTJ", reason: "일방적으로 지시하고 강하게 밀어붙이는 압박을 힘들어합니다." }
     },
     ISFJ: {
-      tag: "수호자형 현실가",
       name: "밀탱크",
       emoji: "🐄",
-      mbtiDesc: "헌신적이고 꼼꼼하며 주변 사람들의 필요를 가만히 챙겨주는 믿음직스러운 수호자입니다.",
-      pokeDesc: "아낌없이 영양 만점 우유를 나누어주는 밀탱크처럼 묵묵하고 든든한 온정으로 세상을 지킵니다.",
-      match: "ESTP",
-      matchReason: "ESTP의 생동감 넘치는 에너지가 ISFJ의 일상에 활기찬 즐거움을 더해줍니다."
+      mbtiDesc: "성실하고 묵묵하며 주변 사람들을 위해 자신을 기꺼이 헌신하는 든든한 수호자입니다.",
+      pokeDesc: "풍부한 우유와 포근한 품으로 동료들에게 안식처가 되어주는 밀탱크처럼 신뢰감을 줍니다.",
+      best: { mbti: "ESTP", reason: "단조로울 수 있는 일상에 생동감과 새로운 즐거움을 불어넣어 줍니다." },
+      worst: { mbti: "ENTP", reason: "규칙을 끊임없이 흔들고 불확실한 상황을 만들 때 불안해합니다." }
     },
     ISTP: {
-      tag: "만능 만능 재주꾼",
       name: "팬텀",
       emoji: "👻",
-      mbtiDesc: "상황 판단이 매우 빠르고 도구나 기계를 자유자재로 다루는 임기응변 능력이 뛰어난 재주꾼입니다.",
-      pokeDesc: "어둠 속에서 유유히 나타나 위기를 재치 있게 넘기는 팬텀처럼 장난스러우면서도 핵심을 파악합니다.",
-      match: "ESFJ",
-      matchReason: "ESFJ의 따뜻한 친화력이 ISTP의 쿨한 외면 속 내면을 이해해 줍니다."
+      mbtiDesc: "상황 판단력이 뛰어나고 도구를 유연하게 다루는 냉철한 문제해결사입니다.",
+      pokeDesc: "그림자 속에서 상황을 관조하다 기지를 발휘하는 팬텀처럼 쿨하면서도 확실한 해결책을 제시합니다.",
+      best: { mbti: "ESFJ", reason: "정반대의 성향이지만 서로의 부족한 점을 가장 완벽하게 완충해 줍니다." },
+      worst: { mbti: "ENFJ", reason: "과도하게 감정적인 동의를 요구하거나 간섭받는 느낌을 싫어합니다." }
     },
     ISTJ: {
-      tag: "청렴결백한 원칙주의자",
       name: "거북왕",
       emoji: "🐢",
-      mbtiDesc: "매사 신중하고 질서정연하며 한 번 맡은 일은 어떤 상황에서도 완수해 내는 신뢰의 대명사입니다.",
-      pokeDesc: "단단한 껍질과 물대포로 단단히 자리를 지키는 거북왕처럼 오차 없이 든든한 방어막이 되어줍니다.",
-      match: "ESFP",
-      matchReason: "ESFP의 유쾌함이 ISTJ의 단단한 일상에 따스하고 활기찬 웃음을 꽃피워 줍니다."
+      mbtiDesc: "신중하고 원칙에 충실하며, 맡은 임무는 끝까지 완수해 내는 현실주의자입니다.",
+      pokeDesc: "단단한 등껍질과 막강한 물대포로 자리를 지키는 거북왕처럼 철두철미한 방어막이 되어줍니다.",
+      best: { mbti: "ESFP", reason: "딱딱하게 경직된 일상에 밝은 웃음과 유쾌한 여유를 선사해 줍니다." },
+      worst: { mbti: "ENFP", reason: "예측 불가능하고 무책임하게 계획을 바꿀 때 스트레스를 받습니다." }
     }
   };
 
-  // UI 초기화 및 MBTI 버튼 생성
-  const gridEl = document.getElementById("mbti-grid");
-  const headerBox = document.getElementById("header-box");
-  const resultBox = document.getElementById("result-box");
-
-  Object.keys(MBTI_DATA).forEach(type => {
+  // MBTI 그리드 버튼 생성
+  const mbtiGrid = document.getElementById("mbti-grid");
+  Object.keys(MBTI_POKEMON).forEach(type => {
     const btn = document.createElement("button");
-    btn.className = "mbti-card";
-    btn.onclick = () => selectMBTI(type);
-    btn.innerHTML = `
-      <div>${type}</div>
-      <span class="group-tag">${MBTI_DATA[type].tag}</span>
-    `;
-    gridEl.appendChild(btn);
+    btn.className = "mbti-btn";
+    btn.innerText = type;
+    btn.onclick = () => showResult(type);
+    mbtiGrid.appendChild(btn);
   });
 
-  // MBTI 선택 함수
-  function selectMBTI(type) {
-    playPopSound();
-    setTimeout(playFanfareSound, 150);
-    triggerConfetti();
+  // 결과 화면 출력
+  function showResult(type) {
+    const data = MBTI_POKEMON[type];
 
-    const item = MBTI_DATA[type];
+    document.getElementById("res-mbti-badge").innerText = type;
+    document.getElementById("res-emoji").innerText = data.emoji;
+    document.getElementById("res-poke-name").innerText = data.name;
+    document.getElementById("res-mbti-desc").innerText = data.mbtiDesc;
+    document.getElementById("res-poke-desc").innerText = data.pokeDesc;
 
-    document.getElementById("res-mbti-tag").innerText = `${type} • ${item.tag}`;
-    document.getElementById("res-emoji").innerText = item.emoji;
-    document.getElementById("res-name").innerText = item.name;
-    document.getElementById("res-mbti-title").innerText = `${type} 성격 리포트`;
-    document.getElementById("res-mbti-desc").innerText = item.mbtiDesc;
-    document.getElementById("res-poke-title").innerText = `${item.name}와(과) 닮은 점`;
-    document.getElementById("res-poke-desc").innerText = item.pokeDesc;
-    document.getElementById("res-match-type").innerText = item.match;
-    document.getElementById("res-match-reason").innerText = item.matchReason;
+    document.getElementById("res-best-mbti").innerText = data.best.mbti;
+    document.getElementById("res-best-desc").innerText = data.best.reason;
 
-    gridEl.style.display = "none";
-    headerBox.style.display = "none";
-    resultBox.style.display = "block";
+    document.getElementById("res-worst-mbti").innerText = data.worst.mbti;
+    document.getElementById("res-worst-desc").innerText = data.worst.reason;
+
+    document.getElementById("header-area").style.display = "none";
+    document.getElementById("mbti-grid").style.display = "none";
+    document.getElementById("result-view").style.display = "block";
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 다시 선택하기
-  function resetApp() {
-    playPopSound();
-    resultBox.style.display = "none";
-    gridEl.style.display = "grid";
-    headerBox.style.display = "block";
+  // 다시 고르기
+  function resetUI() {
+    document.getElementById("result-view").style.display = "none";
+    document.getElementById("header-area").style.display = "block";
+    document.getElementById("mbti-grid").style.display = "grid";
   }
 
-  // 순수 자바스크립트 팡파르 폭죽 효과 (Canvas Confetti)
-  const canvas = document.getElementById('confetti-canvas');
+  /* ----------------------------------------------------
+   * 배경 둥둥 떠다니는 비눗방울 애니메이션 (Canvas)
+   * ---------------------------------------------------- */
+  const canvas = document.getElementById('bubble-canvas');
   const ctx = canvas.getContext('2d');
-  let particles = [];
+
+  let bubbles = [];
 
   function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -552,50 +516,80 @@
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
-  function triggerConfetti() {
-    particles = [];
-    const colors = ['#ff7675', '#fdcb6e', '#ffeaa7', '#55efc4', '#74b9ff', '#a29bfe'];
-    for (let i = 0; i < 90; i++) {
-      particles.push({
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        vx: (Math.random() - 0.5) * 18,
-        vy: (Math.random() - 0.7) * 18,
-        size: Math.random() * 9 + 5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        rotation: Math.random() * 360,
-        rSpeed: (Math.random() - 0.5) * 10,
-        opacity: 1
-      });
+  // 비눗방울 객체 생성을 위한 클래스
+  class Bubble {
+    constructor() {
+      this.reset();
     }
-    requestAnimationFrame(renderConfetti);
-  }
 
-  function renderConfetti() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let active = false;
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height + Math.random() * 100;
+      this.radius = Math.random() * 18 + 8; // 크기
+      this.speed = Math.random() * 0.8 + 0.3; // 오르는 속도
+      this.swing = Math.random() * 0.03 + 0.01; // 좌우 흔들림
+      this.angle = Math.random() * Math.PI * 2;
+      this.opacity = Math.random() * 0.4 + 0.2;
+    }
 
-    particles.forEach(p => {
-      if (p.opacity > 0) {
-        active = true;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.35; // 중력
-        p.opacity -= 0.015;
-        p.rotation += p.rSpeed;
+    update() {
+      this.y -= this.speed;
+      this.angle += this.swing;
+      this.x += Math.sin(this.angle) * 0.6;
 
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate((p.rotation * Math.PI) / 180);
-        ctx.globalAlpha = Math.max(0, p.opacity);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-        ctx.restore();
+      // 화면 위로 나가면 아래에서 다시 생성
+      if (this.y < -this.radius * 2) {
+        this.reset();
       }
-    });
+    }
 
-    if (active) requestAnimationFrame(renderConfetti);
+    draw() {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+
+      // 은은하고 심플한 비눗방울 빛 반사 그라데이션
+      const gradient = ctx.createRadialGradient(
+        this.x - this.radius * 0.3,
+        this.y - this.radius * 0.3,
+        this.radius * 0.1,
+        this.x,
+        this.y,
+        this.radius
+      );
+      gradient.addColorStop(0, `rgba(255, 255, 255, ${this.opacity + 0.3})`);
+      gradient.addColorStop(0.7, `rgba(255, 235, 205, ${this.opacity * 0.5})`);
+      gradient.addColorStop(1, `rgba(226, 130, 10, ${this.opacity * 0.2})`);
+
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // 테두리 반짝임
+      ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity + 0.2})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.restore();
+    }
   }
+
+  // 초기 비눗방울 25개 생성
+  for (let i = 0; i < 25; i++) {
+    const b = new Bubble();
+    b.y = Math.random() * canvas.height; // 화면 전체에 고르게 배치
+    bubbles.push(b);
+  }
+
+  function animateBubbles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    bubbles.forEach(b => {
+      b.update();
+      b.draw();
+    });
+    requestAnimationFrame(animateBubbles);
+  }
+
+  animateBubbles();
 </script>
 </body>
 </html>
