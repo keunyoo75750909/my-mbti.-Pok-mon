@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI로 포켓몬 찾기</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #fffdf7;
+      color: #3a2e1a;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      line-height: 1.7;
+    }
+    h1 {
+      color: #e8930c;
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+    .sub-text {
+      text-align: center;
+      color: #7a6b55;
+      margin-bottom: 24px;
+      font-size: 1.1rem;
+    }
+    .types {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+    }
+    button.mbti-btn {
+      font: inherit;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      border: 2px solid #f0e2bc;
+      background: #ffffff;
+      color: #3a2e1a;
+      border-radius: 12px;
+      padding: 14px 0;
+      transition: all 0.2s ease;
+    }
+    button.mbti-btn:hover {
+      border-color: #e8930c;
+      background: #fff9eb;
+      transform: translateY(-2px);
+    }
+    #result {
+      display: none;
+      background: #fff6e0;
+      border: 2px solid #ebd090;
+      border-radius: 20px;
+      padding: 32px 24px;
+      margin-top: 24px;
+      text-align: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    #result .emoji { font-size: 4.5rem; line-height: 1.2; margin-bottom: 8px; }
+    #result .name { font-size: 1.8rem; font-weight: 900; color: #e8930c; margin-bottom: 12px; }
+    #result .reason { font-size: 1.1rem; margin: 16px 0; word-break: keep-all; }
+    #result .match {
+      display: inline-block;
+      background: #ffffff;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      color: #d67a00;
+      margin-bottom: 20px;
+    }
+    button.reset-btn {
+      font: inherit;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      background: #e8930c;
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 12px 24px;
+    }
+    button.reset-btn:hover { background: #d08000; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🐣 MBTI로 내 포켓몬 찾기</h1>
+  <p class="sub-text">나의 MBTI 유형을 선택해 보세요!</p>
+
+  <div class="types" id="types"></div>
+  <div id="result"></div>
+
+<script>
+const P = {
+  ENFP: ["피카츄", "⚡", "호기심 많고 에너지 넘치는 분위기 메이커!\n어디서나 밝은 빛을 발산해요.", "INFJ"],
+  ENFJ: ["푸린", "🎤", "사람들의 마음을 사로잡는 따뜻한 리더.\n주변 사람들을 챙기고 이끄는 능력이 탁월해요.", "INFP"],
+  ENTP: ["파오리", "🦆", "독창적이고 재치 있는 아이디어 뱅크!\n새로운 도전과 논쟁을 즐기는 타입입니다.", "INFJ"],
+  ENTJ: ["갸라도스", "🌊", "강력한 리더십과 압도적인 추진력!\n목표가 정해지면 거침없이 나아갑니다.", "INTP"],
+  ESFP: ["이상해꽃", "🌻", "수용적이고 사교적인 분위기 창조자.\n지금 이 순간의 즐거움을 함께 나눠요.", "ISFJ"],
+  ESFJ: ["럭키", "💗", "주변 사람들을 다정하게 돌보는 수호자.\n친절함과 따뜻함으로 분위기를 온화하게 만들어요.", "ISFP"],
+  ESTP: ["리자몽", "🔥", "에너지 넘치고 스릴을 즐기는 모험가!\n직관적인 판단과 즉각적인 행동력이 빛납니다.", "ISTJ"],
+  ESTJ: ["코뿌리", "🐗", "체계적이고 책임감이 강한 실행가.\n원칙을 지키며 확실한 결과를 만들어냅니다.", "ISFP"],
+  INFP: ["이브이", "🌸", "풍부한 감성과 무한한 가능성을 가진 몽상가.\n자신만의 독특한 매력을 지니고 있어요.", "ENFJ"],
+  INFJ: ["가디안", "🌙", "깊은 통찰력으로 타인을 이해하는 조언자.\n조용하지만 강한 신념을 가지고 있어요.", "ENFP"],
+  INTP: ["폴리곤", "🧩", "논리적이고 호기심 많은 지적 탐구자.\n복잡한 문제의 원리를 파헤치는 것을 좋아해요.", "ENTJ"],
+  INTJ: ["뮤츠", "🔮", "철저한 계획과 뛰어난 통찰의 전략가.\n멀리 내다보고 목표를 달성해 냅니다.", "ENFP"],
+  ISFP: ["치코리타", "🌿", "온화하고 감성적인 자유로운 예술가.\n주변 환경과의 조화를 중요하게 생각합니다.", "ESFJ"],
+  ISFJ: ["밀탱크", "🐄", "묵묵히 곁을 지켜주는 든든한 수호자.\n성실함과 헌신으로 신뢰를 줍니다.", "ESTP"],
+  ISTP: ["팬텀", "👻", "냉철한 상황 판단과 유연한 문제해결사!\n도구를 잘 다루고 관찰력이 뛰어납니다.", "ESFJ"],
+  ISTJ: ["거북왕", "🐢", "믿음직스럽고 철두철미한 원칙주의자.\n맡은 바 임무를 끝까지 책임지고 완수해요.", "ESFP"]
+};
+
+const typesContainer = document.getElementById("types");
+const resultContainer = document.getElementById("result");
+
+typesContainer.innerHTML = Object.keys(P)
+  .map(t => `<button class="mbti-btn" onclick="show('${t}')">${t}</button>`)
+  .join("");
+
+function show(t) {
+  const [name, emoji, why, match] = P[t];
+  typesContainer.style.display = "none";
+  resultContainer.style.display = "block";
+  
+  resultContainer.innerHTML = `
+    <div class="emoji">${emoji}</div>
+    <div class="name">${name} (${t})</div>
+    <div class="reason">${why.replace(/\n/g, '<br>')}</div>
+    <div class="match">찰떡 궁합: <b>${match}</b></div>
+    <div>
+      <button class="reset-btn" onclick="resetUI()">다시 고르기</button>
+    </div>
+  `;
+}
+
+function resetUI() {
+  resultContainer.style.display = "none";
+  typesContainer.style.display = "grid";
+}
+</script>
+</body>
+</html>
